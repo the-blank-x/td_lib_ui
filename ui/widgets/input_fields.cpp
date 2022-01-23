@@ -3647,11 +3647,6 @@ bool InputField::canInsertFromMimeDataInner(const QMimeData *source) const {
 }
 
 void InputField::insertFromMimeDataInner(const QMimeData *source) {
-	if (source
-		&& _mimeDataHook
-		&& _mimeDataHook(source, MimeAction::Insert)) {
-		return;
-	}
 	const auto text = [&] {
 		const auto textMime = TextUtilities::TagsTextMimeType();
 		const auto tagsMime = TextUtilities::TagsMimeType();
@@ -3676,6 +3671,9 @@ void InputField::insertFromMimeDataInner(const QMimeData *source) {
 	if (!_inDrop) {
 		_insertedTags.clear();
 		_realInsertPosition = -1;
+	}
+	if (source && _mimeDataHook) {
+		_mimeDataHook(source, MimeAction::Insert);
 	}
 }
 
